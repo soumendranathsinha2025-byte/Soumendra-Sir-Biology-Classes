@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soumendra Sir Biology Classes - Interactive Classroom & NEET Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        bio: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
+                            accent: '#10b981',
+                            glow: '#00ff88'
+                        },
+                        darkbg: '#050c08',
+                        cardbg: '#0c1a13'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jsPDF & AutoTable CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #040806;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Animated Biology Particle & Helix Grid Background */
+        .bio-bg {
+            background: radial-gradient(circle at 50% 30%, #0c2b1d 0%, #040806 85%);
+            position: relative;
+        }
+
+        .dna-grid {
+            background-image: radial-gradient(rgba(16, 185, 129, 0.12) 1px, transparent 0);
+            background-size: 28px 28px;
+        }
+
+        /* Glassmorphism Styling */
+        .glass-panel {
+            background: rgba(12, 26, 19, 0.78);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(34, 197, 94, 0.22);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+        }
+
+        .glass-panel-glow {
+            background: rgba(12, 26, 19, 0.88);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 136, 0.45);
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.18);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050c08;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #166534;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #22c55e;
+        }
+
+        /* Scanner animation */
+        @keyframes scanWave {
+            0% { top: 0%; opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0.8; }
+        }
+
+        .scanner-line {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #00ff88, transparent);
+            box-shadow: 0 0 15px #00ff88;
+            animation: scanWave 2s infinite ease-in-out;
+        }
+
+        .pulse-bio {
+            animation: bioPulse 2s infinite;
+        }
+
+        @keyframes bioPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+            70% { transform: scale(1.02); box-shadow: 0 0 0 12px rgba(34, 197, 94, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        /* Simulated Audio Wave Visualizer */
+        .audio-bar {
+            width: 3px;
+            background-color: #00ff88;
+            border-radius: 2px;
+            animation: audioPulse 1.2s infinite ease-in-out alternate;
+        }
+        @keyframes audioPulse {
+            0% { height: 4px; }
+            100% { height: 18px; }
+        }
+    </style>
+</head>
+<body class="bio-bg dna-grid min-h-screen flex flex-col justify-between antialiased">
+
+    <!-- NAVIGATION / HEADER BAR -->
+    <header class="glass-panel sticky top-0 z-40 border-b border-bio-800/40 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-bio-900 via-bio-700 to-bio-500 flex items-center justify-center shadow-lg shadow-bio-500/20">
+                    <i class="fa-solid fa-dna text-white text-2xl animate-spin-slow"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-base md:text-xl text-white tracking-wide flex items-center gap-2">
+                        Soumendra Sir Biology Classes
+                        <span class="text-[10px] bg-bio-500/20 text-bio-300 border border-bio-500/40 px-2.5 py-0.5 rounded-full font-mono uppercase font-bold">NEET Specialist</span>
+                    </h1>
+                    <p class="text-xs text-emerald-400/90 flex flex-wrap items-center gap-x-4 gap-y-1">
+                        <span><i class="fa-solid fa-location-dot text-bio-500"></i> Chandannagar, Hooghly - 712136</span>
+                        <span><i class="fa-solid fa-phone text-bio-500"></i> +91 8910587106</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Role View Switcher -->
+            <div class="flex items-center space-x-3">
+                <div class="bg-black/60 border border-bio-800/80 rounded-xl p-1 flex text-xs font-semibold">
+                    <button id="roleTeacherBtn" onclick="switchRole('teacher')" class="px-3.5 py-2 rounded-lg transition-all text-white bg-bio-600 shadow-md">
+                        <i class="fa-solid fa-user-tie mr-1"></i> Teacher Dashboard
+                    </button>
+                    <button id="roleStudentBtn" onclick="switchRole('student')" class="px-3.5 py-2 rounded-lg transition-all text-gray-400 hover:text-white">
+                        <i class="fa-solid fa-user-graduate mr-1"></i> Student Entrance
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-6 flex-grow">
+
+        <!-- SECTION 1: TEACHER DASHBOARD -->
+        <section id="teacherSection" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Topic & Link Management Card -->
+                <div class="lg:col-span-2 glass-panel rounded-2xl p-6 border border-bio-500/30 shadow-2xl space-y-5">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-bio-800/50 pb-3">
+                        <h2 class="text-lg md:text-xl font-extrabold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-bolt text-bio-400"></i> Session Control & 24h Link Generator
+                        </h2>
+                        <div class="text-xs bg-bio-950 text-bio-300 border border-bio-600/40 px-3 py-1 rounded-lg flex items-center gap-1.5 font-mono">
+                            <i class="fa-solid fa-stopwatch text-bio-400 animate-pulse"></i> Link Expires in: <span id="teacherCountdown">23:59:59</span>
+                        </div>
+                    </div>
+
+                    <!-- Topic Announcement Form -->
+                    <div>
+                        <label class="block text-xs font-bold text-bio-300 uppercase tracking-wider mb-1.5">Current Online Class Topic</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="topicInput" value="NEET UG: Plant Physiology & Molecular Basis of Inheritance" 
+                                class="w-full bg-black/70 border border-bio-800/90 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-bio-400 transition" placeholder="Enter session topic...">
+                            <button onclick="updateTopic()" class="bg-bio-600 hover:bg-bio-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition flex items-center gap-2 whitespace-nowrap shadow-lg shadow-bio-600/30">
+                                <i class="fa-solid fa-bullhorn"></i> Announce
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Unique Link View Box -->
+                    <div class="p-4 bg-black/70 rounded-xl border border-bio-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <div class="overflow-hidden">
+                            <div class="text-[11px] text-gray-400 font-mono mb-0.5">Secure Student Join Link (Valid 24h):</div>
+                            <div id="generatedLinkDisplay" class="text-sm font-mono text-bio-400 font-semibold truncate">https://soumendra-bio.edu/join?session=BIO-2026-NEET-9823</div>
+                        </div>
+                        <div class="flex gap-2 shrink-0">
+                            <button onclick="generateNewLink()" class="px-3.5 py-2 bg-bio-900/80 hover:bg-bio-800 border border-bio-700/60 text-bio-300 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-arrows-rotate"></i> New Link
+                            </button>
+                            <button onclick="copyClassLink()" class="px-4 py-2 bg-bio-600 hover:bg-bio-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow">
+                                <i class="fa-regular fa-copy"></i> Copy Link
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Permissions & Moderation Quick Bar -->
+                    <div class="pt-2">
+                        <label class="block text-xs font-bold text-bio-300 uppercase tracking-wider mb-2">Classroom Host Controls</label>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <button id="permScreenShareBtn" onclick="toggleScreenSharePermission()" class="p-3 bg-bio-950/90 border border-bio-500/40 rounded-xl text-xs font-semibold text-bio-300 hover:border-bio-400 transition flex items-center justify-between">
+                                <span><i class="fa-solid fa-desktop mr-1.5"></i> Student Screen Share</span>
+                                <span id="permScreenBadge" class="px-1.5 py-0.5 text-[10px] bg-bio-500/20 text-bio-400 rounded border border-bio-500/30">ALLOWED</span>
+                            </button>
+                            <button onclick="muteAllStudents()" class="p-3 bg-bio-950/90 border border-bio-800/80 rounded-xl text-xs font-semibold text-gray-300 hover:border-red-500/60 hover:text-red-300 transition flex items-center justify-between">
+                                <span><i class="fa-solid fa-microphone-slash mr-1.5 text-red-400"></i> Mute All Audio</span>
+                                <i class="fa-solid fa-ban text-xs text-red-400"></i>
+                            </button>
+                            <button onclick="openMcqBuilderModal()" class="p-3 bg-bio-950/90 border border-bio-500/40 rounded-xl text-xs font-semibold text-bio-300 hover:border-bio-400 transition flex items-center justify-between">
+                                <span><i class="fa-solid fa-vial-circle-check mr-1.5 text-amber-400"></i> NEET Quiz Launcher</span>
+                                <span class="px-1.5 py-0.5 text-[10px] bg-amber-500/20 text-amber-300 rounded border border-amber-500/30">+4 / -1</span>
+                            </button>
+                            <button onclick="downloadAttendancePdf()" class="p-3 bg-bio-950/90 border border-bio-500/40 rounded-xl text-xs font-semibold text-bio-300 hover:border-bio-400 transition flex items-center justify-between">
+                                <span><i class="fa-solid fa-file-pdf mr-1.5 text-bio-400"></i> Export Attendance</span>
+                                <i class="fa-solid fa-download text-xs text-bio-400"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Waiting Room & Live Student Moderation Queue -->
+                <div class="glass-panel rounded-2xl p-6 border border-bio-500/30 shadow-2xl flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between mb-3 border-b border-bio-800/50 pb-3">
+                            <h3 class="font-extrabold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-user-shield text-bio-400"></i> Live Roster & Verification Queue
+                            </h3>
+                            <span class="px-2 py-0.5 rounded-full bg-bio-500/20 text-bio-400 text-xs font-mono font-bold">
+                                <span id="participantCount">4</span> Active
+                            </span>
+                        </div>
+
+                        <!-- Waiting List Items -->
+                        <div id="participantList" class="space-y-2.5 max-h-[260px] overflow-y-auto pr-1">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button onclick="enterClassroomView()" class="w-full bg-gradient-to-r from-bio-600 to-bio-500 hover:from-bio-500 hover:to-bio-400 text-white font-extrabold py-3.5 rounded-xl text-sm transition shadow-lg shadow-bio-600/30 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-video text-base"></i> Launch Virtual Classroom
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Logs Section (Teacher Table) -->
+            <div class="glass-panel rounded-2xl p-6 border border-bio-500/20 shadow-xl space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-bio-800/50 pb-3">
+                    <h3 class="text-base md:text-lg font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-user text-bio-400"></i> Registered Attendance Log (Automated Capture)
+                    </h3>
+                    <div class="flex gap-2 text-xs">
+                        <button onclick="downloadAttendancePdf('weekly')" class="px-3 py-1.5 bg-bio-950 hover:bg-bio-900 border border-bio-700/50 text-bio-300 rounded-lg transition font-semibold">
+                            <i class="fa-regular fa-calendar-weeks mr-1"></i> Export Weekly PDF
+                        </button>
+                        <button onclick="downloadAttendancePdf('monthly')" class="px-3 py-1.5 bg-bio-600 hover:bg-bio-500 text-white rounded-lg transition font-bold shadow">
+                            <i class="fa-solid fa-file-export mr-1"></i> Export Monthly PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-gray-300">
+                        <thead class="bg-black/60 text-bio-300 uppercase tracking-wider text-[10px] border-b border-bio-800">
+                            <tr>
+                                <th class="p-3">Student Name</th>
+                                <th class="p-3">Class</th>
+                                <th class="p-3">Board / Stream</th>
+                                <th class="p-3">Verification</th>
+                                <th class="p-3">Date</th>
+                                <th class="p-3">Time of Joining</th>
+                                <th class="p-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceTableBody" class="divide-y divide-bio-900/60 font-mono">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 2: STUDENT WAITING ROOM & AI FACIAL RECOGNITION GATE -->
+        <section id="studentGateSection" class="hidden max-w-3xl mx-auto space-y-6">
+            <div class="glass-panel rounded-3xl p-6 md:p-8 border border-bio-500/40 shadow-2xl relative">
+                
+                <!-- Topic & Header Announcement -->
+                <div class="text-center mb-6">
+                    <span class="bg-bio-500/20 border border-bio-500/40 text-bio-300 text-xs px-3 py-1 rounded-full uppercase tracking-widest font-extrabold">
+                        Soumendra Sir Live Biology Gate
+                    </span>
+                    <h2 id="studentTopicTitle" class="text-2xl md:text-3xl font-extrabold text-white mt-2">
+                        NEET UG: Plant Physiology & Molecular Basis of Inheritance
+                    </h2>
+                    <p class="text-xs text-emerald-400/80 mt-1">Verify link validity, complete facial scan, and record attendance to enter.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    
+                    <!-- Facial Scanner Simulator Box -->
+                    <div class="flex flex-col items-center">
+                        <div class="relative w-full aspect-square max-w-[260px] rounded-2xl overflow-hidden border-2 border-bio-500/60 bg-black shadow-2xl flex items-center justify-center">
+                            <video id="webcamScanFeed" autoplay playsinline muted class="w-full h-full object-cover"></video>
+                            <canvas id="faceOverlayCanvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+
+                            <div id="scannerAnimation" class="scanner-line hidden"></div>
+
+                            <!-- Initial Video Overlay Placeholder -->
+                            <div id="webcamPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-darkbg/95 text-center p-4">
+                                <div class="w-16 h-16 rounded-full bg-bio-900/60 border border-bio-500 flex items-center justify-center text-3xl text-bio-400 mb-2">
+                                    <i class="fa-solid fa-face-viewfinder"></i>
+                                </div>
+                                <p class="text-xs text-gray-300 font-medium">Switch on Camera for AI Facial Verification</p>
+                                <button onclick="startFacialScan()" class="mt-3 px-4 py-2 bg-bio-600 hover:bg-bio-500 text-white rounded-xl text-xs font-bold shadow transition">
+                                    <i class="fa-solid fa-camera mr-1"></i> Start Face Scan
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Scan Status Display -->
+                        <div class="mt-3 text-center">
+                            <span id="scanStatusBadge" class="text-xs font-semibold px-3 py-1 rounded-full bg-gray-800 text-gray-400 border border-gray-700">
+                                Status: Face Not Verified
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Student Details Form & Rules Modal Trigger -->
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs text-bio-300 mb-1 font-bold">Student Full Name *</label>
+                            <input type="text" id="studName" class="w-full bg-black/70 border border-bio-800/90 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-bio-400" placeholder="e.g. Srijan Das">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs text-bio-300 mb-1 font-bold">Class Standard</label>
+                                <select id="studClass" class="w-full bg-black/70 border border-bio-800/90 rounded-xl px-2 py-2 text-xs text-white focus:outline-none focus:border-bio-400">
+                                    <option>Class 11</option>
+                                    <option selected>Class 12</option>
+                                    <option>NEET Repeater</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-bio-300 mb-1 font-bold">Board / Stream</label>
+                                <select id="studBoard" class="w-full bg-black/70 border border-bio-800/90 rounded-xl px-2 py-2 text-xs text-white focus:outline-none focus:border-bio-400">
+                                    <option selected>WBCHSE</option>
+                                    <option>CBSE</option>
+                                    <option>ICSE / ISC</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 text-xs text-gray-400 bg-black/50 p-2.5 rounded-xl border border-bio-900 font-mono">
+                            <div><span class="text-gray-500">Date:</span> <span id="gateDateVal" class="text-gray-200">2026-11-03</span></div>
+                            <div><span class="text-gray-500">Time:</span> <span id="gateTimeVal" class="text-gray-200">19:30 IST</span></div>
+                        </div>
+
+                        <!-- Classroom Rules Modal / Checklist Box -->
+                        <div class="p-3 bg-bio-950/80 border border-bio-800/80 rounded-xl space-y-2">
+                            <h4 class="text-xs font-bold text-bio-400 flex items-center justify-between">
+                                <span><i class="fa-solid fa-clipboard-check mr-1"></i> Classroom Code of Conduct</span>
+                                <button onclick="openRulesModal()" class="text-[10px] text-bio-300 underline">Read Full Rules</button>
+                            </h4>
+                            <label class="flex items-center gap-2 pt-1 cursor-pointer">
+                                <input type="checkbox" id="rulesAgreeCheck" class="rounded border-bio-700 text-bio-500 focus:ring-bio-500 bg-black">
+                                <span class="text-xs text-white font-medium">I agree to follow all instructions & decorum</span>
+                            </label>
+                        </div>
+
+                        <button id="joinClassBtn" disabled onclick="verifyAndJoinClass()" class="w-full bg-gray-800 text-gray-500 font-extrabold py-3.5 rounded-xl text-sm transition shadow flex items-center justify-center gap-2 cursor-not-allowed">
+                            <i class="fa-solid fa-right-to-bracket"></i> Join Online Class
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 3: INTERACTIVE VIDEO CLASSROOM (BETTER THAN GOOGLE MEET) -->
+        <section id="classroomSection" class="hidden space-y-4">
+            
+            <!-- Room Top Control Bar -->
+            <div class="glass-panel rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-3 border border-bio-500/30">
+                <div class="flex items-center gap-3">
+                    <span class="flex items-center gap-2 px-3 py-1 bg-red-500/20 text-red-400 border border-red-500/40 rounded-lg text-xs font-bold animate-pulse">
+                        <i class="fa-solid fa-circle text-[8px]"></i> LIVE CLASSROOM
+                    </span>
+                    <h3 id="roomTopicDisplay" class="text-sm md:text-base font-extrabold text-white truncate max-w-lg">
+                        NEET UG: Plant Physiology & Molecular Basis of Inheritance
+                    </h3>
+                </div>
+
+                <div class="flex items-center gap-2 text-xs">
+                    <button onclick="toggleDualScreenLayout()" class="px-3 py-1.5 bg-bio-900/80 hover:bg-bio-800 text-bio-300 border border-bio-600/40 rounded-lg transition font-semibold flex items-center gap-1.5">
+                        <i class="fa-solid fa-columns"></i> <span id="dualModeText">Toggle Dual Screen</span>
+                    </button>
+                    <button onclick="toggleWhiteboard()" class="px-3 py-1.5 bg-bio-900/80 hover:bg-bio-800 text-bio-300 border border-bio-600/40 rounded-lg transition font-semibold flex items-center gap-1.5">
+                        <i class="fa-solid fa-pen-ruler"></i> Bio Canvas Notes
+                    </button>
+                    <span class="px-3 py-1.5 bg-black/60 text-bio-400 border border-bio-800/80 rounded-lg font-mono font-bold">
+                        <i class="fa-solid fa-user-group text-xs mr-1"></i> <span id="liveUserCounter">5</span> Online
+                    </span>
+                </div>
+            </div>
+
+            <!-- MAIN MEDIA GRID: Dual Screens & Camera Feeds -->
+            <div id="mediaGridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 min-h-[500px]">
+                
+                <!-- Stream 1: Host Teacher Video Feed -->
+                <div class="relative glass-panel rounded-2xl overflow-hidden border border-bio-500/40 group bg-black flex flex-col justify-between shadow-2xl">
+                    <div class="absolute top-3 left-3 z-10 bg-black/70 backdrop-blur border border-bio-500/50 text-bio-300 text-xs px-3 py-1 rounded-md flex items-center gap-2 font-bold">
+                        <i class="fa-solid fa-user-tie text-bio-400"></i> Soumendra Sir (Faculty Host)
+                    </div>
+                    
+                    <div class="w-full h-full min-h-[240px] flex items-center justify-center bg-gradient-to-b from-bio-950/60 to-black relative">
+                        <video id="teacherCamFeed" autoplay playsinline class="w-full h-full object-cover"></video>
+                        <div id="teacherCamPlaceholder" class="absolute flex flex-col items-center justify-center text-center p-4">
+                            <div class="w-20 h-20 rounded-full bg-bio-800/80 border-2 border-bio-400 flex items-center justify-center text-3xl text-bio-300 mb-2 shadow-lg shadow-bio-500/20">
+                                <i class="fa-solid fa-microscope"></i>
+                            </div>
+                            <span class="text-sm font-bold text-white">Soumendra Sir</span>
+                            <span class="text-xs text-bio-400">Senior Biology Faculty</span>
+                        </div>
+
+                        <!-- Audio Wave Indicator -->
+                        <div class="absolute bottom-3 right-3 flex items-center gap-1 bg-black/60 px-2.5 py-1 rounded-md border border-bio-800">
+                            <div class="audio-bar" style="animation-delay: 0.1s"></div>
+                            <div class="audio-bar" style="animation-delay: 0.3s"></div>
+                            <div class="audio-bar" style="animation-delay: 0.2s"></div>
+                            <span class="text-[10px] text-bio-400 font-mono ml-1">HD Voice</span>
+                        </div>
+                    </div>
+
+                    <div class="p-2.5 bg-black/90 border-t border-bio-900 flex justify-between items-center text-xs">
+                        <span class="text-gray-400"><i class="fa-solid fa-microphone text-bio-400 mr-1"></i> Mic Active</span>
+                        <span class="text-bio-400 font-mono text-[10px] bg-bio-950 px-2 py-0.5 rounded border border-bio-800">1080p 60fps</span>
+                    </div>
+                </div>
+
+                <!-- Stream 2: Screen Presentation Stream A (Primary Share) -->
+                <div id="primaryScreenBox" class="relative glass-panel rounded-2xl overflow-hidden border border-bio-500/40 bg-black flex flex-col justify-between shadow-2xl lg:col-span-2">
+                    <div class="absolute top-3 left-3 z-10 bg-black/70 backdrop-blur border border-bio-500/50 text-bio-300 text-xs px-3 py-1 rounded-md flex items-center gap-2 font-bold">
+                        <i class="fa-solid fa-desktop text-bio-400"></i> Screen Share 1: Presentation Slides & Video Notes
+                    </div>
+
+                    <div class="w-full h-full min-h-[250px] flex items-center justify-center relative bg-bio-950/30">
+                        <video id="primaryScreenFeed" autoplay playsinline class="w-full h-full object-contain hidden"></video>
+                        
+                        <div id="screenPlaceholder" class="flex flex-col items-center justify-center text-center p-6 space-y-3">
+                            <i class="fa-solid fa-file-powerpoint text-5xl text-bio-500/40"></i>
+                            <div>
+                                <h4 class="text-base font-bold text-white">No Primary Presentation Stream Active</h4>
+                                <p class="text-xs text-gray-400 max-w-sm mt-1">Teacher can share full PDF notes, biology diagrams, or animated educational videos with sound.</p>
+                            </div>
+                            <button onclick="startScreenShare('primary')" class="px-5 py-2.5 bg-bio-600 hover:bg-bio-500 text-white rounded-xl text-xs font-bold transition shadow-lg">
+                                <i class="fa-solid fa-share-from-square mr-1.5"></i> Share Screen / Presentation
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="p-2.5 bg-black/90 border-t border-bio-900 flex justify-between items-center text-xs">
+                        <span class="text-gray-400"><i class="fa-solid fa-sliders text-bio-400 mr-1"></i> Dual-Screen Streaming Mode Ready</span>
+                        <button onclick="startScreenShare('secondary')" class="text-xs text-bio-300 hover:text-white underline font-medium">
+                            + Connect Secondary Document Stream
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stream 3: Dual-Screen Stream B (Secondary Display / Document Viewer) -->
+                <div id="secondaryScreenBox" class="hidden relative glass-panel rounded-2xl overflow-hidden border border-bio-500/40 bg-black flex flex-col justify-between shadow-2xl lg:col-span-3">
+                    <div class="absolute top-3 left-3 z-10 bg-black/70 backdrop-blur border border-bio-500/50 text-bio-300 text-xs px-3 py-1 rounded-md flex items-center gap-2 font-bold">
+                        <i class="fa-solid fa-folder-open text-bio-400"></i> Screen Share 2: Secondary Document / Microscope Feed / Reference Audio
+                    </div>
+
+                    <div class="w-full h-[280px] flex items-center justify-center relative bg-bio-950/40">
+                        <video id="secondaryScreenFeed" autoplay playsinline class="w-full h-full object-contain hidden"></video>
+                        <div id="secondaryPlaceholder" class="text-center p-4">
+                            <p class="text-xs text-gray-400">Secondary display stream active. Select window to stream second document.</p>
+                            <button onclick="startScreenShare('secondary')" class="mt-2 px-4 py-2 bg-bio-800 hover:bg-bio-700 text-bio-300 rounded-lg text-xs font-semibold">
+                                Attach Stream 2
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Biology Diagram Annotation Canvas -->
+                <div id="whiteboardContainer" class="hidden lg:col-span-3 glass-panel rounded-2xl p-4 border border-bio-500/40 bg-black/95">
+                    <div class="flex items-center justify-between mb-3 border-b border-bio-800 pb-2">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-pen-nib text-bio-400"></i>
+                            <h4 class="text-sm font-bold text-white">Interactive Biology Diagram Canvas & Annotator</h4>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="canvasColor" value="#00ff88" class="w-7 h-7 rounded cursor-pointer bg-transparent border-0">
+                            <button onclick="clearCanvas()" class="px-3 py-1 bg-red-950/80 text-red-300 border border-red-800/60 rounded text-xs">Clear</button>
+                            <button onclick="toggleWhiteboard()" class="px-2.5 py-1 bg-gray-800 text-gray-300 rounded text-xs"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+                    <canvas id="bioDiagramCanvas" class="w-full h-[300px] bg-darkbg rounded-xl border border-bio-900 cursor-crosshair"></canvas>
+                </div>
+
+            </div>
+
+            <!-- FLOATING CONTROL DOCK (GOOGLE MEET ENHANCED BAR) -->
+            <div class="glass-panel-glow rounded-2xl p-3 max-w-2xl mx-auto flex items-center justify-around gap-2 border border-bio-500/50 shadow-2xl">
+                
+                <!-- Mic Toggle Button -->
+                <button id="micBtn" onclick="toggleAudio()" class="w-12 h-12 rounded-xl bg-bio-800/80 hover:bg-bio-700 text-white flex items-center justify-center transition shadow-lg" title="Toggle Microphone">
+                    <i class="fa-solid fa-microphone text-lg"></i>
+                </button>
+
+                <!-- Camera Toggle Button -->
+                <button id="camBtn" onclick="toggleVideo()" class="w-12 h-12 rounded-xl bg-bio-800/80 hover:bg-bio-700 text-white flex items-center justify-center transition shadow-lg" title="Toggle Camera">
+                    <i class="fa-solid fa-video text-lg"></i>
+                </button>
+
+                <!-- Screen Share Button -->
+                <button id="screenBtn" onclick="startScreenShare('primary')" class="w-12 h-12 rounded-xl bg-bio-800/80 hover:bg-bio-700 text-white flex items-center justify-center transition shadow-lg" title="Share Screen">
+                    <i class="fa-solid fa-desktop text-lg"></i>
+                </button>
+
+                <!-- Hand Raise Button -->
+                <button id="handBtn" onclick="raiseHand()" class="w-12 h-12 rounded-xl bg-bio-800/80 hover:bg-bio-700 text-white flex items-center justify-center transition shadow-lg" title="Raise Hand">
+                    <i class="fa-solid fa-hand text-lg"></i>
+                </button>
+
+                <!-- NEET MCQ Quiz Button -->
+                <button onclick="openMcqStudentModal()" class="w-12 h-12 rounded-xl bg-amber-600/90 hover:bg-amber-500 text-white flex items-center justify-center transition shadow-lg" title="NEET Daily MCQ Exam">
+                    <i class="fa-solid fa-vial-circle-check text-lg"></i>
+                </button>
+
+                <!-- Leave Meeting Button -->
+                <button onclick="leaveClassroom()" class="px-5 h-12 rounded-xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs flex items-center justify-center gap-2 transition shadow-lg">
+                    <i class="fa-solid fa-phone-slash text-base"></i> Leave
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="glass-panel border-t border-bio-900/80 py-3.5 px-4 text-center text-xs text-gray-400 mt-6">
+        <p>© 2026 Soumendra Sir Biology Classes, Chandannagar, Hooghly-712136. Contact: +91 8910587106. All Rights Reserved.</p>
+    </footer>
+
+
+    <!-- MODAL 1: MANDATORY RULES & GUIDELINES -->
+    <div id="rulesModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel rounded-2xl max-w-lg w-full p-6 border border-bio-500/40 shadow-2xl relative space-y-4">
+            <button onclick="closeRulesModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="border-b border-bio-800 pb-3">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-gavel text-bio-400"></i> Student Classroom Guidelines
+                </h3>
+            </div>
+
+            <div class="space-y-3 text-xs text-gray-300 max-h-60 overflow-y-auto pr-1">
+                <p class="font-semibold text-bio-300">1. Verification Protocol:</p>
+                <p>Every student must switch on their camera for AI Facial Verification before gaining entry into Soumendra Sir's online lecture.</p>
+                
+                <p class="font-semibold text-bio-300">2. Screen Sharing Rules:</p>
+                <p>Students can only share their screen when explicit permission is granted by the faculty host.</p>
+                
+                <p class="font-semibold text-bio-300">3. NEET MCQ Rules (+4 / -1 Marking):</p>
+                <p>Daily topic evaluation follows official NEET UG marking scheme (+4 for correct answers, -1 for incorrect answers).</p>
+
+                <p class="font-semibold text-bio-300">4. Discipline & Removal:</p>
+                <p>The host reserves the authority to immediately remove any unverified participant disrupting class decorum.</p>
+            </div>
+
+            <div class="pt-2 flex justify-end">
+                <button onclick="closeRulesModal()" class="bg-bio-600 hover:bg-bio-500 text-white font-bold px-5 py-2 rounded-xl text-xs">
+                    Understood & Agree
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL 2: TEACHER MCQ QUIZ BUILDER & LAUNCHER -->
+    <div id="mcqBuilderModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel rounded-2xl max-w-xl w-full p-6 border border-bio-500/40 shadow-2xl relative space-y-4">
+            <button onclick="closeMcqBuilderModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="border-b border-bio-800 pb-3">
+                <span class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2.5 py-0.5 rounded font-bold uppercase">
+                    NEET Exam Pattern (+4 / -1)
+                </span>
+                <h3 class="text-xl font-bold text-white mt-1">Trigger Live NEET MCQ Quiz</h3>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Question Text</label>
+                    <textarea id="newMcqQuestion" class="w-full bg-black/70 border border-bio-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-bio-400" rows="2">Which organelle is responsible for ATP synthesis via oxidative phosphorylation?</textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="optA" value="Mitochondria" class="bg-black/70 border border-bio-800 rounded-lg p-2 text-xs text-white" placeholder="Option A">
+                    <input type="text" id="optB" value="Ribosome" class="bg-black/70 border border-bio-800 rounded-lg p-2 text-xs text-white" placeholder="Option B">
+                    <input type="text" id="optC" value="Golgi Apparatus" class="bg-black/70 border border-bio-800 rounded-lg p-2 text-xs text-white" placeholder="Option C">
+                    <input type="text" id="optD" value="Endoplasmic Reticulum" class="bg-black/70 border border-bio-800 rounded-lg p-2 text-xs text-white" placeholder="Option D">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Correct Answer Index</label>
+                    <select id="correctOptionIdx" class="w-full bg-black/70 border border-bio-800 rounded-lg p-2 text-xs text-white">
+                        <option value="0">Option A</option>
+                        <option value="1">Option B</option>
+                        <option value="2">Option C</option>
+                        <option value="3">Option D</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="pt-2 flex justify-end gap-2">
+                <button onclick="closeMcqBuilderModal()" class="px-4 py-2 bg-gray-800 text-gray-300 rounded-xl text-xs font-semibold">Cancel</button>
+                <button onclick="publishQuizToStudents()" class="px-5 py-2 bg-bio-600 hover:bg-bio-500 text-white font-bold rounded-xl text-xs shadow-lg">
+                    Broadcast Quiz to Class
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL 3: STUDENT NEET MCQ PORTAL & LIVE LEADERBOARD -->
+    <div id="mcqStudentModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel rounded-2xl max-w-lg w-full p-6 border border-bio-500/40 shadow-2xl relative space-y-4">
+            <button onclick="closeMcqStudentModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="border-b border-bio-800 pb-3">
+                <span class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded font-bold uppercase">
+                    NEET Marking: Correct +4 | Incorrect -1
+                </span>
+                <h3 class="text-xl font-bold text-white mt-1">Daily Live NEET Test Portal</h3>
+            </div>
+
+            <!-- Quiz Question Panel -->
+            <div id="mcqQuestionBox" class="space-y-4">
+                <p id="mcqQuestionText" class="text-sm text-gray-200 font-medium leading-relaxed">
+                    Q: Loading question...
+                </p>
+
+                <div id="mcqOptionsBox" class="space-y-2">
+                    <!-- Dynamic Options -->
+                </div>
+
+                <div class="pt-2 flex justify-end">
+                    <button id="submitMcqBtn" onclick="submitMcqAnswer()" class="bg-bio-600 hover:bg-bio-500 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-lg">
+                        Submit Answer
+                    </button>
+                </div>
+            </div>
+
+            <!-- NEET Score & Leaderboard View -->
+            <div id="leaderboardView" class="hidden space-y-4 pt-2">
+                <div class="p-4 bg-bio-950/90 rounded-2xl border border-bio-700/60 text-center">
+                    <div class="text-xs text-gray-400">Your Calculated Score</div>
+                    <div id="userScoreDisplay" class="text-3xl font-extrabold text-bio-400 mt-1">+4 Marks</div>
+                </div>
+
+                <h4 class="text-xs font-bold text-bio-300 uppercase tracking-wider">Live Class Rank Board</h4>
+                <div id="leaderboardList" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                    <!-- Dynamic Ranks -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT LOGIC ARCHITECTURE -->
+    <script>
+        // GLOBAL STATE MANAGEMENT
+        let currentRole = 'teacher';
+        let screenShareAllowed = true;
+        let isAudioMuted = false;
+        let isVideoOff = false;
+        let facialVerified = false;
+        let activeMcqOption = null;
+
+        // Active MCQ Question
+        let activeQuiz = {
+            q: "Which cellular organelle possesses its own circular DNA and 70S ribosomes?",
+            options: ["Mitochondria", "Lysosome", "Golgi Body", "Nucleolus"],
+            correct: 0
+        };
+
+        // Class Roster & Attendance Database
+        let participants = [
+            { id: 1, name: "Soumendra Sir", role: "Teacher", class: "Faculty", board: "Director", time: "19:00 IST", verified: true, score: 0 },
+            { id: 2, name: "Subhadip Santra", role: "Student", class: "Class 12", board: "WBCHSE", time: "19:02 IST", verified: true, score: 4 },
+            { id: 3, name: "Priya Chakraborty", role: "Student", class: "Class 12", board: "CBSE", time: "19:04 IST", verified: true, score: 4 },
+            { id: 4, name: "Aritra Ghosh", role: "Student", class: "NEET Repeater", board: "ISC", time: "19:05 IST", verified: true, score: -1 }
+        ];
+
+        // INITIALIZATION
+        window.onload = function() {
+            updateParticipantRoster();
+            updateAttendanceTable();
+            setupCanvasDrawing();
+            setCurrentDateTime();
+            startCountdownTimer();
+        };
+
+        function setCurrentDateTime() {
+            const now = new Date();
+            document.getElementById('gateDateVal').innerText = now.toISOString().split('T')[0];
+            document.getElementById('gateTimeVal').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' IST';
+        }
+
+        // 24-HOUR LINK EXPIRATION TIMER
+        function startCountdownTimer() {
+            let seconds = 86399; // 24 Hours
+            setInterval(() => {
+                seconds--;
+                if (seconds < 0) seconds = 86400;
+                const hrs = Math.floor(seconds / 3600);
+                const mins = Math.floor((seconds % 3600) / 60);
+                const secs = seconds % 60;
+                document.getElementById('teacherCountdown').innerText = 
+                    `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+            }, 1000);
+        }
+
+        // ROLE SWITCHING LOGIC
+        function switchRole(role) {
+            currentRole = role;
+            const teacherBtn = document.getElementById('roleTeacherBtn');
+            const studentBtn = document.getElementById('roleStudentBtn');
+
+            if (role === 'teacher') {
+                teacherBtn.className = "px-3.5 py-2 rounded-lg transition-all text-white bg-bio-600 shadow-md";
+                studentBtn.className = "px-3.5 py-2 rounded-lg transition-all text-gray-400 hover:text-white";
+                
+                document.getElementById('teacherSection').classList.remove('hidden');
+                document.getElementById('studentGateSection').classList.add('hidden');
+                document.getElementById('classroomSection').classList.add('hidden');
+            } else {
+                studentBtn.className = "px-3.5 py-2 rounded-lg transition-all text-white bg-bio-600 shadow-md";
+                teacherBtn.className = "px-3.5 py-2 rounded-lg transition-all text-gray-400 hover:text-white";
+
+                document.getElementById('teacherSection').classList.add('hidden');
+                document.getElementById('studentGateSection').classList.remove('hidden');
+                document.getElementById('classroomSection').classList.add('hidden');
+            }
+        }
+
+        // SESSION & LINK GENERATION
+        function generateNewLink() {
+            const hash = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const newLink = `https://soumendra-bio.edu/join?session=BIO-2026-${hash}`;
+            document.getElementById('generatedLinkDisplay').innerText = newLink;
+            alert("New 24-Hour Expiration Classroom Link Generated Successfully!");
+        }
+
+        function copyClassLink() {
+            const linkText = document.getElementById('generatedLinkDisplay').innerText;
+            const tempInput = document.createElement('input');
+            tempInput.value = linkText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert("Class link copied to clipboard: " + linkText);
+        }
+
+        function updateTopic() {
+            const topic = document.getElementById('topicInput').value;
+            if (!topic.trim()) return;
+            document.getElementById('studentTopicTitle').innerText = topic;
+            document.getElementById('roomTopicDisplay').innerText = topic;
+            alert("Today's Biology Topic Published!");
+        }
+
+        function toggleScreenSharePermission() {
+            screenShareAllowed = !screenShareAllowed;
+            const badge = document.getElementById('permScreenBadge');
+            if (screenShareAllowed) {
+                badge.innerText = "ALLOWED";
+                badge.className = "px-1.5 py-0.5 text-[10px] bg-bio-500/20 text-bio-400 rounded border border-bio-500/30";
+            } else {
+                badge.innerText = "DISABLED";
+                badge.className = "px-1.5 py-0.5 text-[10px] bg-red-500/20 text-red-400 rounded border border-red-500/30";
+            }
+        }
+
+        function muteAllStudents() {
+            alert("All student microphones have been muted by Soumendra Sir.");
+        }
+
+        // PARTICIPANT ROSTER & ATTENDANCE MANAGEMENT
+        function updateParticipantRoster() {
+            const container = document.getElementById('participantList');
+            container.innerHTML = '';
+            
+            document.getElementById('participantCount').innerText = participants.length;
+
+            participants.forEach(p => {
+                const item = document.createElement('div');
+                item.className = "p-2.5 bg-black/50 rounded-xl border border-bio-900 flex items-center justify-between text-xs";
+                item.innerHTML = `
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-full bg-bio-800 border border-bio-500/60 flex items-center justify-center font-bold text-bio-300">
+                            ${p.name.charAt(0)}
+                        </div>
+                        <div>
+                            <div class="text-white font-semibold">${p.name} ${p.role === 'Teacher' ? '<span class="text-[10px] text-bio-400 font-mono">(Host)</span>' : ''}</div>
+                            <div class="text-[10px] text-gray-400">${p.class} • ${p.board}</div>
+                        </div>
+                    </div>
+                    ${p.role === 'Student' ? `
+                        <button onclick="removeParticipant(${p.id})" class="text-red-400 hover:text-red-300 px-2 py-1 rounded bg-red-950/50 border border-red-800/50 text-[10px]">
+                            Remove
+                        </button>
+                    ` : '<span class="text-[10px] text-bio-400 font-bold">Host</span>'}
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function updateAttendanceTable() {
+            const tbody = document.getElementById('attendanceTableBody');
+            tbody.innerHTML = '';
+
+            participants.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-bio-950/40 transition";
+                tr.innerHTML = `
+                    <td class="p-3 text-white font-semibold">${p.name}</td>
+                    <td class="p-3">${p.class}</td>
+                    <td class="p-3">${p.board}</td>
+                    <td class="p-3"><span class="text-bio-400 bg-bio-950 px-2 py-0.5 rounded border border-bio-800">Verified ✓</span></td>
+                    <td class="p-3">2026-11-03</td>
+                    <td class="p-3">${p.time}</td>
+                    <td class="p-3">
+                        ${p.role === 'Student' ? `<button onclick="removeParticipant(${p.id})" class="text-red-400 hover:underline">Kick Out</button>` : '-'}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function removeParticipant(id) {
+            participants = participants.filter(p => p.id !== id);
+            updateParticipantRoster();
+            updateAttendanceTable();
+            document.getElementById('liveUserCounter').innerText = participants.length;
+        }
+
+        // SIMULATED FACIAL RECOGNITION SCAN
+        async function startFacialScan() {
+            const placeholder = document.getElementById('webcamPlaceholder');
+            const video = document.getElementById('webcamScanFeed');
+            const scanner = document.getElementById('scannerAnimation');
+            const badge = document.getElementById('scanStatusBadge');
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                placeholder.classList.add('hidden');
+                scanner.classList.remove('hidden');
+
+                badge.innerText = "Status: Scanning Face Features...";
+                badge.className = "text-xs font-semibold px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse";
+
+                setTimeout(() => {
+                    scanner.classList.add('hidden');
+                    badge.innerText = "Status: Face Verified ✓";
+                    badge.className = "text-xs font-semibold px-3 py-1 rounded-full bg-bio-500/20 text-bio-400 border border-bio-500/40";
+                    facialVerified = true;
+                    checkGateValidation();
+                }, 2200);
+
+            } catch (err) {
+                placeholder.classList.add('hidden');
+                badge.innerText = "Status: Face Verified (Fallback)";
+                badge.className = "text-xs font-semibold px-3 py-1 rounded-full bg-bio-500/20 text-bio-400 border border-bio-500/40";
+                facialVerified = true;
+                checkGateValidation();
+            }
+        }
+
+        document.getElementById('rulesAgreeCheck').addEventListener('change', checkGateValidation);
+        document.getElementById('studName').addEventListener('input', checkGateValidation);
+
+        function checkGateValidation() {
+            const name = document.getElementById('studName').value.trim();
+            const checked = document.getElementById('rulesAgreeCheck').checked;
+            const btn = document.getElementById('joinClassBtn');
+
+            if (name && checked && facialVerified) {
+                btn.disabled = false;
+                btn.className = "w-full bg-bio-600 hover:bg-bio-500 text-white font-extrabold py-3.5 rounded-xl text-sm transition shadow-lg shadow-bio-600/30 flex items-center justify-center gap-2 cursor-pointer pulse-bio";
+            } else {
+                btn.disabled = true;
+                btn.className = "w-full bg-gray-800 text-gray-500 font-extrabold py-3.5 rounded-xl text-sm transition shadow flex items-center justify-center gap-2 cursor-not-allowed";
+            }
+        }
+
+        function verifyAndJoinClass() {
+            const name = document.getElementById('studName').value.trim();
+            const cls = document.getElementById('studClass').value;
+            const board = document.getElementById('studBoard').value;
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' IST';
+
+            participants.push({
+                id: Date.now(),
+                name: name,
+                role: 'Student',
+                class: cls,
+                board: board,
+                time: time,
+                verified: true,
+                score: 0
+            });
+
+            updateParticipantRoster();
+            updateAttendanceTable();
+            enterClassroomView();
+        }
+
+        function enterClassroomView() {
+            document.getElementById('teacherSection').classList.add('hidden');
+            document.getElementById('studentGateSection').classList.add('hidden');
+            document.getElementById('classroomSection').classList.remove('hidden');
+            document.getElementById('liveUserCounter').innerText = participants.length;
+
+            initTeacherCamera();
+        }
+
+        async function initTeacherCamera() {
+            const video = document.getElementById('teacherCamFeed');
+            const placeholder = document.getElementById('teacherCamPlaceholder');
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                video.srcObject = stream;
+                placeholder.classList.add('hidden');
+            } catch (e) {
+                console.log("Webcam feed preview in placeholder state.");
+            }
+        }
+
+        // SCREEN SHARING (WEBRTC MEDIA DEVICES)
+        async function startScreenShare(type) {
+            if (currentRole === 'student' && !screenShareAllowed) {
+                alert("Screen sharing permission has been disabled by Soumendra Sir.");
+                return;
+            }
+
+            try {
+                const captureStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+                if (type === 'primary') {
+                    const video = document.getElementById('primaryScreenFeed');
+                    document.getElementById('screenPlaceholder').classList.add('hidden');
+                    video.srcObject = captureStream;
+                    video.classList.remove('hidden');
+                } else {
+                    const video = document.getElementById('secondaryScreenFeed');
+                    document.getElementById('secondaryPlaceholder').classList.add('hidden');
+                    document.getElementById('secondaryScreenBox').classList.remove('hidden');
+                    video.srcObject = captureStream;
+                    video.classList.remove('hidden');
+                }
+            } catch (err) {
+                alert("Screen sharing cancelled or unavailable.");
+            }
+        }
+
+        function toggleDualScreenLayout() {
+            const secBox = document.getElementById('secondaryScreenBox');
+            secBox.classList.toggle('hidden');
+        }
+
+        // ANNOTATION CANVAS
+        function setupCanvasDrawing() {
+            const canvas = document.getElementById('bioDiagramCanvas');
+            const ctx = canvas.getContext('2d');
+            let drawing = false;
+
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            canvas.addEventListener('mousedown', (e) => {
+                drawing = true;
+                ctx.beginPath();
+                ctx.moveTo(e.offsetX, e.offsetY);
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (!drawing) return;
+                ctx.strokeStyle = document.getElementById('canvasColor').value;
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+            });
+
+            canvas.addEventListener('mouseup', () => drawing = false);
+            canvas.addEventListener('mouseleave', () => drawing = false);
+        }
+
+        function clearCanvas() {
+            const canvas = document.getElementById('bioDiagramCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function toggleWhiteboard() {
+            document.getElementById('whiteboardContainer').classList.toggle('hidden');
+        }
+
+        // CLASSROOM CONTROLS
+        function toggleAudio() {
+            isAudioMuted = !isAudioMuted;
+            document.getElementById('micBtn').innerHTML = isAudioMuted ? 
+                `<i class="fa-solid fa-microphone-slash text-lg text-red-400"></i>` : `<i class="fa-solid fa-microphone text-lg"></i>`;
+        }
+
+        function toggleVideo() {
+            isVideoOff = !isVideoOff;
+            document.getElementById('camBtn').innerHTML = isVideoOff ? 
+                `<i class="fa-solid fa-video-slash text-lg text-red-400"></i>` : `<i class="fa-solid fa-video text-lg"></i>`;
+        }
+
+        function raiseHand() {
+            alert("Hand Raised! Soumendra Sir has been notified.");
+        }
+
+        function leaveClassroom() {
+            if (confirm("Are you sure you want to leave the live classroom session?")) {
+                switchRole('teacher');
+            }
+        }
+
+        // RULES MODAL CONTROLS
+        function openRulesModal() { document.getElementById('rulesModal').classList.remove('hidden'); }
+        function closeRulesModal() { document.getElementById('rulesModal').classList.add('hidden'); }
+
+        // MCQ BUILDER & STUDENT MODAL CONTROLS
+        function openMcqBuilderModal() { document.getElementById('mcqBuilderModal').classList.remove('hidden'); }
+        function closeMcqBuilderModal() { document.getElementById('mcqBuilderModal').classList.add('hidden'); }
+
+        function publishQuizToStudents() {
+            const q = document.getElementById('newMcqQuestion').value;
+            const a = document.getElementById('optA').value;
+            const b = document.getElementById('optB').value;
+            const c = document.getElementById('optC').value;
+            const d = document.getElementById('optD').value;
+            const correct = parseInt(document.getElementById('correctOptionIdx').value);
+
+            activeQuiz = { q, options: [a, b, c, d], correct };
+            closeMcqBuilderModal();
+            alert("NEET MCQ Quiz successfully broadcasted to all students!");
+        }
+
+        function openMcqStudentModal() {
+            document.getElementById('mcqStudentModal').classList.remove('hidden');
+            document.getElementById('mcqQuestionBox').classList.remove('hidden');
+            document.getElementById('leaderboardView').classList.add('hidden');
+
+            document.getElementById('mcqQuestionText').innerText = activeQuiz.q;
+            const box = document.getElementById('mcqOptionsBox');
+            box.innerHTML = '';
+
+            activeQuiz.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-3 rounded-xl bg-black/60 border border-bio-800 hover:border-bio-400 text-xs text-gray-200 transition flex items-center gap-2";
+                btn.onclick = () => selectMcqOption(idx, btn);
+                btn.innerHTML = `<span class="w-5 h-5 rounded-full border border-bio-600 flex items-center justify-center text-[10px] text-bio-400 font-bold">${String.fromCharCode(65 + idx)}</span> ${opt}`;
+                box.appendChild(btn);
+            });
+        }
+
+        function closeMcqStudentModal() { document.getElementById('mcqStudentModal').classList.add('hidden'); }
+
+        function selectMcqOption(idx, btnElement) {
+            activeMcqOption = idx;
+            const children = document.getElementById('mcqOptionsBox').children;
+            for (let c of children) {
+                c.className = "w-full text-left p-3 rounded-xl bg-black/60 border border-bio-800 text-xs text-gray-200 transition flex items-center gap-2";
+            }
+            btnElement.className = "w-full text-left p-3 rounded-xl bg-bio-900/80 border-2 border-bio-400 text-xs text-white transition flex items-center gap-2 font-semibold";
+        }
+
+        function submitMcqAnswer() {
+            if (activeMcqOption === null) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            let score = (activeMcqOption === activeQuiz.correct) ? 4 : -1;
+            document.getElementById('userScoreDisplay').innerText = (score > 0 ? `+${score}` : `${score}`) + " Marks";
+
+            document.getElementById('mcqQuestionBox').classList.add('hidden');
+            document.getElementById('leaderboardView').classList.remove('hidden');
+
+            renderLeaderboard();
+        }
+
+        function renderLeaderboard() {
+            const list = document.getElementById('leaderboardList');
+            list.innerHTML = '';
+
+            const sorted = [...participants].filter(p => p.role === 'Student').sort((a, b) => b.score - a.score);
+
+            sorted.forEach((st, idx) => {
+                const row = document.createElement('div');
+                row.className = "p-2.5 bg-black/50 rounded-xl border border-bio-900 flex justify-between items-center text-xs";
+                row.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 font-extrabold ${idx === 0 ? 'text-amber-400' : 'text-gray-400'}">#${idx + 1}</span>
+                        <span class="text-white font-medium">${st.name}</span>
+                    </div>
+                    <span class="font-mono font-extrabold ${st.score >= 0 ? 'text-bio-400' : 'text-red-400'}">${st.score >= 0 ? '+' : ''}${st.score} pts</span>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        // PDF EXPORT FUNCTION (jspdf)
+        function downloadAttendancePdf(type = 'weekly') {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Header Banner
+            doc.setFillColor(12, 26, 19);
+            doc.rect(0, 0, 210, 32, 'F');
+
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(16);
+            doc.setFont("helvetica", "bold");
+            doc.text("Soumendra Sir Biology Classes", 14, 15);
+
+            doc.setFontSize(9);
+            doc.setFont("helvetica", "normal");
+            doc.text("Chandannagar, Hooghly - 712136 | Contact: +91 8910587106", 14, 23);
+
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(11);
+            doc.setFont("helvetica", "bold");
+            doc.text(`Official Student Attendance Report (${type.toUpperCase()} SUMMARY)`, 14, 42);
+
+            const tableRows = participants.map(p => [
+                p.name,
+                p.role,
+                p.class || 'N/A',
+                p.board || 'N/A',
+                'Verified',
+                '2026-11-03',
+                p.time
+            ]);
+
+            doc.autoTable({
+                startY: 48,
+                head: [['Student Name', 'Role', 'Class', 'Board', 'Verification', 'Date', 'Join Time']],
+                body: tableRows,
+                headStyles: { fillColor: [22, 163, 74] },
+                theme: 'grid'
+            });
+
+            doc.save(`Soumendra_Sir_Biology_Attendance_${type.toUpperCase()}.pdf`);
+        }
+    </script>
+</body>
+</html>
